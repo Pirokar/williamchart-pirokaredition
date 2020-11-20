@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#3F51B5</color>
+    <color name="colorPrimaryDark">#475F50</color>
+    <color name="colorAccent">#FF4081</color>
+
+    <array name="barsColors">
+        <item>#3F51B5</item>
+        <item>#3F51B5</item>
+        <item>#3F51B5</item>
+        <item>#3F51B5</item>
+        <item>#FF4081</item>
+        <item>#3F51B5</item>
+        <item>#3F51B5</item>
+        <item>#3F51B5</item>
+        <item>#3F51B5</item>
+        <item>#3F51B5</item>
+        <item>#3F51B5</item>
+        <item>#3F51B5</item>
+    </array>
+</resources>
