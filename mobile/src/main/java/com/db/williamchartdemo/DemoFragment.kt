@@ -4,6 +4,7 @@ import android.graphics.Color
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -39,6 +40,16 @@ class DemoFragment : Fragment() {
         )
 
         mobileConnectionBarChart.onDataPointClickListener = { index, _, _ ->
+            Log.i("clicked_time", System.currentTimeMillis().toString())
+            for(i in mobileConnectionBarChart.barsColors.indices) {
+                mobileConnectionBarChart.barsColors[i] = ContextCompat.getColor(requireContext(),
+                        R.color.colorPrimary)
+            }
+            mobileConnectionBarChart.barsColors[index] = ContextCompat.getColor(requireContext(),
+                    R.color.colorAccent)
+
+            mobileConnectionBarChart.invalidate()
+            Log.i("draw_time", System.currentTimeMillis().toString())
             Toast.makeText(requireContext(), "$index clicked", Toast.LENGTH_SHORT).show()
         }
     }
