@@ -150,12 +150,17 @@ abstract class AxisChartView @JvmOverloads constructor(
     abstract val chartConfiguration: ChartConfiguration
 
     fun show(entries: LinkedHashMap<String, Float>) {
-        doOnPreDraw { renderer.preDraw(chartConfiguration) }
+        doOnPreDraw { renderer.preDraw(chartConfiguration, true) }
+        renderer.render(entries)
+    }
+
+    fun updateData(entries: LinkedHashMap<String, Float>) {
+        doOnPreDraw { renderer.preDraw(chartConfiguration, false) }
         renderer.render(entries)
     }
 
     fun animate(entries: LinkedHashMap<String, Float>) {
-        doOnPreDraw { renderer.preDraw(chartConfiguration) }
+        doOnPreDraw { renderer.preDraw(chartConfiguration, true) }
         renderer.anim(entries, animation)
     }
 

@@ -45,7 +45,7 @@ class BarChartRenderer(
 
     private lateinit var yLabels: List<Label>
 
-    override fun preDraw(configuration: ChartConfiguration): Boolean {
+    override fun preDraw(configuration: ChartConfiguration, withAnimation: Boolean): Boolean {
 
         if (data.isEmpty()) return true
 
@@ -94,7 +94,9 @@ class BarChartRenderer(
         placeLabelsY(innerFrame)
         placeDataPoints(innerFrame)
 
-        animation.animateFrom(innerFrame.bottom, data) { view.postInvalidate() }
+        if(withAnimation) {
+            animation.animateFrom(innerFrame.bottom, data) { view.postInvalidate() }
+        }
 
         return false
     }
@@ -151,6 +153,10 @@ class BarChartRenderer(
                     )
             )
         }
+    }
+
+    override fun updateData(entries: LinkedHashMap<String, Float>) {
+        data = entries.toDataPoints()
     }
 
     override fun render(entries: LinkedHashMap<String, Float>) {

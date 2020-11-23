@@ -48,7 +48,21 @@ class DemoFragment : Fragment() {
             mobileConnectionBarChart.barsColors[index] = ContextCompat.getColor(requireContext(),
                     R.color.colorAccent)
 
+            mobileConnectionBarChart.updateData(linkedMapOf(
+                    "Янв" to 1300f,
+                    "Февр" to 800f,
+                    "Март" to 100f,
+                    "Апр" to 80f,
+                    "Май" to 100f,
+                    "Июнь" to 800f,
+                    "Авг" to 500f,
+                    "Сент" to 300f,
+                    "Окт" to 400f,
+                    "Ноя" to 450f,
+                    "Дек" to 0f
+            ))
             mobileConnectionBarChart.invalidate()
+
             Log.i("draw_time", System.currentTimeMillis().toString())
             Toast.makeText(requireContext(), "$index clicked", Toast.LENGTH_SHORT).show()
         }

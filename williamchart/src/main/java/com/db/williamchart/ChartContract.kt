@@ -36,8 +36,9 @@ interface ChartContract {
     }
 
     interface Renderer {
-        fun preDraw(configuration: ChartConfiguration): Boolean
+        fun preDraw(configuration: ChartConfiguration, withAnimation: Boolean): Boolean
         fun draw()
+        fun updateData(entries: LinkedHashMap<String, Float>)
         fun render(entries: LinkedHashMap<String, Float>)
         fun anim(entries: LinkedHashMap<String, Float>, animation: ChartAnimation<DataPoint>)
         fun processClick(x: Float?, y: Float?): Triple<Int, Float, Float>
