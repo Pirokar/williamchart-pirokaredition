@@ -25,6 +25,7 @@
         <attr name="chart_barsColors" format="reference" />
         <attr name="chart_barsBackgroundColors" format="reference" />
         <attr name="chart_barsRadius" format="dimension" />
+        <attr name="chart_barWidth" format="integer"/>
     </declare-styleable>
 
     <declare-styleable name="LineChartAttrs">

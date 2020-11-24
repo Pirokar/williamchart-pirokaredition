@@ -37,6 +37,8 @@ abstract class AxisChartView @JvmOverloads constructor(
 ) : FrameLayout(context, attrs, defStyleAttr) {
     private var widthOfView = 0
 
+    var dataCount = 0
+
     var labelsSize: Float = defaultLabelsSize
 
     var labelsColors = arrayListOf(-0x1000000)
@@ -164,16 +166,19 @@ abstract class AxisChartView @JvmOverloads constructor(
     abstract val chartConfiguration: ChartConfiguration
 
     fun show(entries: LinkedHashMap<String, Float>) {
+        dataCount = entries.count()
         doOnPreDraw { renderer.preDraw(chartConfiguration, true) }
         renderer.render(entries)
     }
 
     fun updateData(entries: LinkedHashMap<String, Float>) {
+        dataCount = entries.count()
         doOnPreDraw { renderer.preDraw(chartConfiguration, false) }
         renderer.render(entries)
     }
 
     fun animate(entries: LinkedHashMap<String, Float>) {
+        dataCount = entries.count()
         doOnPreDraw { renderer.preDraw(chartConfiguration, true) }
         renderer.anim(entries, animation)
     }

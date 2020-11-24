@@ -5,7 +5,6 @@ import android.content.res.TypedArray
 import android.graphics.Color
 import android.graphics.Paint
 import android.util.AttributeSet
-import androidx.annotation.ColorInt
 import com.db.williamchart.ChartContract
 import com.db.williamchart.R
 import com.db.williamchart.animation.NoAnimation
@@ -25,7 +24,6 @@ class BarChartView @JvmOverloads constructor(
     attrs: AttributeSet? = null,
     defStyleAttr: Int = 0
 ) : AxisChartView(context, attrs, defStyleAttr), ChartContract.BarView {
-
     @Suppress("MemberVisibilityCanBePrivate")
     var spacing = defaultSpacing
 
@@ -36,12 +34,15 @@ class BarChartView @JvmOverloads constructor(
     var barRadius: Float = defaultBarsRadius
 
     @Suppress("MemberVisibilityCanBePrivate")
+    var barWidth = -1
+
+    @Suppress("MemberVisibilityCanBePrivate")
     var barsBackgroundColors = ArrayList<Int>()
 
     override val chartConfiguration: ChartConfiguration
         get() =
             BarChartConfiguration(
-                width = 1500,
+                width = if(barWidth > 0) dataCount * barWidth else measuredWidth,
                 height = measuredHeight,
                 paddings = Paddings(
                     paddingLeft.toFloat(),
@@ -130,6 +131,7 @@ class BarChartView @JvmOverloads constructor(
             }
 
             barRadius = getDimension(R.styleable.BarChartAttrs_chart_barsRadius, barRadius)
+            barWidth = getInt(R.styleable.BarChartAttrs_chart_barWidth, -1)
             recycle()
         }
     }

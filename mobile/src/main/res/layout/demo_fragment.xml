@@ -18,6 +18,7 @@
         app:chart_barsRadius="5dp"
         app:chart_barsColors="@array/barsColors"
         app:chart_axis="x"
+        app:chart_barWidth="125"
         app:chart_labelsSize="12sp"
         app:chart_spacing="7dp"/>
 
