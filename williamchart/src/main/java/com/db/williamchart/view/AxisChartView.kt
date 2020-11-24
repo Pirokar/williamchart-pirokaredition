@@ -4,8 +4,10 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.res.TypedArray
 import android.graphics.Canvas
+import android.graphics.Rect
 import android.graphics.Typeface
 import android.util.AttributeSet
+import android.util.Log
 import android.view.GestureDetector
 import android.view.MotionEvent
 import android.view.ViewGroup
@@ -13,31 +15,27 @@ import android.widget.FrameLayout
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.GestureDetectorCompat
 import androidx.core.view.doOnPreDraw
-import com.db.williamchart.ChartContract
-import com.db.williamchart.ExperimentalFeature
-import com.db.williamchart.Labels
-import com.db.williamchart.Grid
-import com.db.williamchart.Painter
-import com.db.williamchart.R
-import com.db.williamchart.Tooltip
+import com.db.williamchart.*
 import com.db.williamchart.animation.ChartAnimation
 import com.db.williamchart.animation.DefaultAnimation
 import com.db.williamchart.data.AxisType
-import com.db.williamchart.data.configuration.ChartConfiguration
 import com.db.williamchart.data.DataPoint
 import com.db.williamchart.data.Frame
 import com.db.williamchart.data.Scale
+import com.db.williamchart.data.configuration.ChartConfiguration
 import com.db.williamchart.extensions.obtainStyledAttributes
 import com.db.williamchart.plugin.AxisGrid
 import com.db.williamchart.plugin.AxisLabels
 import com.db.williamchart.renderer.RendererConstants.Companion.notInitialized
+import kotlin.math.max
 
 @OptIn(ExperimentalFeature::class)
 abstract class AxisChartView @JvmOverloads constructor(
-    context: Context,
-    attrs: AttributeSet? = null,
-    defStyleAttr: Int = 0
+        context: Context,
+        attrs: AttributeSet? = null,
+        defStyleAttr: Int = 0
 ) : FrameLayout(context, attrs, defStyleAttr) {
+    private var widthOfView = 0
 
     var labelsSize: Float = defaultLabelsSize
 
@@ -63,10 +61,10 @@ abstract class AxisChartView @JvmOverloads constructor(
 
     var grid: Grid = object : Grid {
         override fun draw(
-            canvas: Canvas,
-            innerFrame: Frame,
-            xLabelsPositions: List<Float>,
-            yLabelsPositions: List<Float>
+                canvas: Canvas,
+                innerFrame: Frame,
+                xLabelsPositions: List<Float>,
+                yLabelsPositions: List<Float>
         ) {
         }
     }
@@ -88,18 +86,29 @@ abstract class AxisChartView @JvmOverloads constructor(
 
     private val gestureDetector: GestureDetectorCompat =
         GestureDetectorCompat(
-            this.context,
-            object : GestureDetector.SimpleOnGestureListener() {
-                override fun onDown(e: MotionEvent?): Boolean = true
-                override fun onSingleTapConfirmed(e: MotionEvent?): Boolean {
-                    val (index, x, y) = renderer.processClick(e?.x, e?.y)
-                    return if (index != -1) {
-                        onDataPointClickListener(index, x, y)
-                        tooltip.onDataPointClick(x, y)
-                        true
-                    } else false
+                this.context,
+                object : GestureDetector.SimpleOnGestureListener() {
+                    override fun onDown(e: MotionEvent?): Boolean = true
+                    override fun onSingleTapConfirmed(e: MotionEvent?): Boolean {
+                        val (index, x, y) = renderer.processClick(e?.x, e?.y)
+                        return if (index != -1) {
+                            onDataPointClickListener(index, x, y)
+                            tooltip.onDataPointClick(x, y)
+                            true
+                        } else false
+                    }
+
+                    override fun onScroll(e1: MotionEvent?, e2: MotionEvent?, distanceX: Float, distanceY: Float): Boolean {
+                        Log.i("onScroll", "before: distanceX = $distanceX")
+                        if(scrollX + distanceX >= 0 && scrollX + distanceX + canvas.width <= BarChartView.latestRightBound) {
+                            scrollBy(distanceX.toInt(), 0)
+                        }
+                        Log.i("onScroll", "after: current ScrollX = $scrollX")
+                        Log.i("onScroll", "right bound = ${BarChartView.latestRightBound}")
+                        Log.i("onScroll", "canvas width = ${canvas.width}")
+                        return true
+                    }
                 }
-            }
         )
 
     init {
@@ -118,15 +127,20 @@ abstract class AxisChartView @JvmOverloads constructor(
         // style.clean()
     }
 
+    override fun computeHorizontalScrollOffset(): Int {
+        return max(0, scrollX)
+    }
+
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec)
 
         val widthMode = MeasureSpec.getMode(widthMeasureSpec)
         val heightMode = MeasureSpec.getMode(heightMeasureSpec)
 
+        widthOfView = if (widthMode == MeasureSpec.AT_MOST) defaultFrameWidth else widthMeasureSpec
         setMeasuredDimension(
-            if (widthMode == MeasureSpec.AT_MOST) defaultFrameWidth else widthMeasureSpec,
-            if (heightMode == MeasureSpec.AT_MOST) defaultFrameHeight else heightMeasureSpec
+                widthOfView,
+                if (heightMode == MeasureSpec.AT_MOST) defaultFrameHeight else heightMeasureSpec
         )
     }
 
@@ -186,8 +200,8 @@ abstract class AxisChartView @JvmOverloads constructor(
             if (hasValue(R.styleable.ChartAttrs_chart_labelsFont) && !isInEditMode) {
                 labelsFont =
                     ResourcesCompat.getFont(
-                        context,
-                        getResourceId(R.styleable.ChartAttrs_chart_labelsFont, -1)
+                            context,
+                            getResourceId(R.styleable.ChartAttrs_chart_labelsFont, -1)
                     )
                 painter.labelsFont = labelsFont
             }
@@ -218,10 +232,10 @@ abstract class AxisChartView @JvmOverloads constructor(
         private const val defaultLabelsSize = 60F
         private val editModeSampleData =
             linkedMapOf(
-                "Label1" to 1f,
-                "Label2" to 7.5f,
-                "Label3" to 4.7f,
-                "Label4" to 3.5f
+                    "Label1" to 1f,
+                    "Label2" to 7.5f,
+                    "Label3" to 4.7f,
+                    "Label4" to 3.5f
             )
     }
 }

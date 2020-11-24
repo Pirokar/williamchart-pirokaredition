@@ -41,7 +41,7 @@ class BarChartView @JvmOverloads constructor(
     override val chartConfiguration: ChartConfiguration
         get() =
             BarChartConfiguration(
-                width = measuredWidth,
+                width = 1500,
                 height = measuredHeight,
                 paddings = Paddings(
                     paddingLeft.toFloat(),
@@ -76,6 +76,7 @@ class BarChartView @JvmOverloads constructor(
                 barRadius,
                 painter.paint
             )
+            latestRightBound = frames[i].right
         }
     }
 
@@ -137,5 +138,6 @@ class BarChartView @JvmOverloads constructor(
         private const val defaultSpacing = 10f
         private const val defaultBarsColor = Color.BLUE
         private const val defaultBarsRadius = 0F
+        var latestRightBound = 0f
     }
 }
