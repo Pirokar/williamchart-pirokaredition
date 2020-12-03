@@ -165,6 +165,10 @@ abstract class AxisChartView @JvmOverloads constructor(
 
     abstract val chartConfiguration: ChartConfiguration
 
+    fun resetScrollX() {
+        scrollBy(-scrollX, 0)
+    }
+
     fun show(entries: LinkedHashMap<String, Float>) {
         dataCount = entries.count()
         doOnPreDraw { renderer.preDraw(chartConfiguration, true) }
