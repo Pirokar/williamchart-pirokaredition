@@ -116,6 +116,10 @@ class HorizontalBarChartView @JvmOverloads constructor(
         frames.forEach { canvas.drawRect(it.toRect(), painter.paint) }
     }
 
+    override fun scrollToBar(barIndex: Int) {
+        //TODO("Not yet implemented")
+    }
+
     private fun handleAttributes(typedArray: TypedArray) {
         typedArray.apply {
             spacing = getDimension(R.styleable.BarChartAttrs_chart_spacing, spacing)

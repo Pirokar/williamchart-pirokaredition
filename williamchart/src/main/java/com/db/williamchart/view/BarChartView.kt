@@ -39,6 +39,8 @@ class BarChartView @JvmOverloads constructor(
     @Suppress("MemberVisibilityCanBePrivate")
     var barsBackgroundColors = ArrayList<Int>()
 
+    private var barsRightBounds = ArrayList<Float>()
+
     override val chartConfiguration: ChartConfiguration
         get() =
             BarChartConfiguration(
@@ -65,6 +67,7 @@ class BarChartView @JvmOverloads constructor(
     }
 
     override fun drawBars(frames: List<Frame>) {
+        barsRightBounds.clear()
         painter.prepare(style = Paint.Style.FILL)
         for(i in frames.indices) {
             painter.paint.color = when {
@@ -78,6 +81,7 @@ class BarChartView @JvmOverloads constructor(
                 painter.paint
             )
             latestRightBound = frames[i].right
+            barsRightBounds.add(latestRightBound)
         }
     }
 
@@ -115,6 +119,17 @@ class BarChartView @JvmOverloads constructor(
         frames.forEach { canvas.drawRect(it.toRect(), painter.paint) }
     }
 
+    override fun scrollToBar(barIndex: Int) {
+        val screenWidth = ScreenHelper.getScreenWidth(context)
+        val boundToScroll = barsRightBounds[barIndex].toInt()
+        val paddingBetween = barsRightBounds[1] - barsRightBounds[0]
+
+        if(boundToScroll > screenWidth) {
+            val scrollX = boundToScroll - screenWidth + paddingBetween
+            scrollBy(scrollX.toInt(), 0)
+        }
+    }
+
     private fun handleAttributes(typedArray: TypedArray) {
         typedArray.apply {
             spacing = getDimension(R.styleable.BarChartAttrs_chart_spacing, spacing)
@@ -141,5 +156,6 @@ class BarChartView @JvmOverloads constructor(
         private const val defaultBarsColor = Color.BLUE
         private const val defaultBarsRadius = 0F
         var latestRightBound = 0f
+
     }
 }

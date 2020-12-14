@@ -1,5 +1,6 @@
 package com.db.williamchartdemo
 
+import android.content.Context
 import android.graphics.Color
 import android.os.Bundle
 import android.os.Handler
@@ -31,6 +32,7 @@ class DemoFragment : Fragment() {
                         "Апр" to 20f,
                         "Май" to 100f,
                         "Июнь" to 800f,
+                        "Июль" to 400f,
                         "Авг" to 500f,
                         "Сент" to 300f,
                         "Окт" to 400f,
@@ -39,8 +41,13 @@ class DemoFragment : Fragment() {
                 )
         )
 
+        Handler(Looper.getMainLooper()).postDelayed({
+            mobileConnectionBarChart.scrollToBar(9)
+        }, 200)
+
         mobileConnectionBarChart.onDataPointClickListener = { index, _, _ ->
             Log.i("clicked_time", System.currentTimeMillis().toString())
+            mobileConnectionBarChart.resetScrollX()
             for(i in mobileConnectionBarChart.barsColors.indices) {
                 mobileConnectionBarChart.barsColors[i] = ContextCompat.getColor(requireContext(),
                         R.color.colorPrimary)
@@ -55,6 +62,7 @@ class DemoFragment : Fragment() {
                     "Апр" to 80f,
                     "Май" to 100f,
                     "Июнь" to 800f,
+                    "Июль" to 600f,
                     "Авг" to 500f,
                     "Сент" to 300f,
                     "Окт" to 400f,

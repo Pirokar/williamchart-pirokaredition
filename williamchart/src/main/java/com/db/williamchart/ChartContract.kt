@@ -26,6 +26,7 @@ interface ChartContract {
     interface BarView : AxisView {
         fun drawBars(frames: List<Frame>)
         fun drawBarsBackground(frames: List<Frame>)
+        fun scrollToBar(barIndex: Int)
     }
 
     interface DonutView {
