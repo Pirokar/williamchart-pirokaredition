@@ -107,7 +107,7 @@ abstract class AxisChartView @JvmOverloads constructor(
                         Log.i("onScroll", "before: distanceX = $distanceX")
                         onScrollListener?.onViewScrolled()
 
-                        if (scrollX + distanceX >= 0 && scrollX + distanceX + canvas.width <= BarChartView.latestRightBound) {
+                        if (scrollX + distanceX >= 0 && scrollX + distanceX + canvas.width <= BarChartView.latestRightBound + 40) {
                             scrollBy(distanceX.toInt(), 0)
                         }
                         Log.i("onScroll", "after: current ScrollX = $scrollX")
@@ -150,10 +150,6 @@ abstract class AxisChartView @JvmOverloads constructor(
         super.onDraw(canvas)
         this.canvas = canvas
         renderer.draw()
-        if (barToScroll != 11) {
-            scrollToBar(11)
-            barToScroll = 11
-        }
     }
 
     @SuppressLint("ClickableViewAccessibility")

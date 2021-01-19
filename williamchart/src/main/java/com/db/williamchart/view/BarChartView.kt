@@ -5,6 +5,8 @@ import android.content.Context
 import android.content.res.TypedArray
 import android.graphics.Color
 import android.graphics.Paint
+import android.os.Handler
+import android.os.Looper
 import android.util.AttributeSet
 import com.db.williamchart.ChartContract
 import com.db.williamchart.R
@@ -38,23 +40,25 @@ class BarChartView @JvmOverloads constructor(
 
     private var barsRightBounds = ArrayList<Float>()
 
+    private var countOfCrashesWhenScroll = 0
+
     override val chartConfiguration: ChartConfiguration
         get() =
             BarChartConfiguration(
-                width = if(barWidth > 0) dataCount * barWidth else measuredWidth,
-                height = measuredHeight,
-                paddings = Paddings(
-                    paddingLeft.toFloat(),
-                    paddingTop.toFloat(),
-                    paddingRight.toFloat(),
-                    paddingBottom.toFloat()
-                ),
-                axis = axis,
-                labelsSize = labelsSize,
-                scale = scale,
-                barsBackgroundColors = barsBackgroundColors,
-                barsSpacing = spacing,
-                labelsFormatter = labelsFormatter
+                    width = if (barWidth > 0) dataCount * barWidth else measuredWidth,
+                    height = measuredHeight,
+                    paddings = Paddings(
+                            paddingLeft.toFloat(),
+                            paddingTop.toFloat(),
+                            paddingRight.toFloat(),
+                            paddingBottom.toFloat()
+                    ),
+                    axis = axis,
+                    labelsSize = labelsSize,
+                    scale = scale,
+                    barsBackgroundColors = barsBackgroundColors,
+                    barsSpacing = spacing,
+                    labelsFormatter = labelsFormatter
             )
 
     init {
@@ -65,6 +69,7 @@ class BarChartView @JvmOverloads constructor(
 
     override fun drawBars(frames: List<Frame>) {
         barsRightBounds.clear()
+
         painter.prepare(style = Paint.Style.FILL)
         for(i in frames.indices) {
             painter.paint.color = when {
@@ -117,13 +122,28 @@ class BarChartView @JvmOverloads constructor(
     }
 
     override fun scrollToBar(barIndex: Int) {
-        val screenWidth = ScreenHelper.getScreenWidth(context)
-        val boundToScroll = barsRightBounds[barIndex].toInt()
-        val paddingBetween = barsRightBounds[1] - barsRightBounds[0]
+        try {
+            val screenWidth = ScreenHelper.getScreenWidth(context)
+            val boundToScroll = if (barsRightBounds.size > barIndex + 1) {
+                barsRightBounds[barIndex + 1].toInt() - barWidth
+            } else {
+                barsRightBounds[barIndex].toInt()
+            }
 
-        if(boundToScroll > screenWidth) {
-            val scrollX = boundToScroll - screenWidth + paddingBetween
-            scrollBy(scrollX.toInt(), 0)
+            if (boundToScroll > screenWidth) {
+                val scrollX = boundToScroll - screenWidth + spacing.toInt()
+                scrollBy(scrollX, 0)
+            }
+
+            countOfCrashesWhenScroll = 0
+        } catch (exc: java.lang.IndexOutOfBoundsException) {
+            if (++countOfCrashesWhenScroll < 10) {
+                Handler(Looper.getMainLooper()).postDelayed({
+                    scrollToBar(barIndex)
+                }, 25)
+            } else {
+                countOfCrashesWhenScroll = 0
+            }
         }
     }
 

@@ -1,10 +1,6 @@
 package com.db.williamchartdemo
 
-import android.content.Context
-import android.graphics.Color
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -12,8 +8,6 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
-import com.db.williamchart.ExperimentalFeature
-import com.db.williamchart.slidertooltip.SliderTooltip
 import kotlinx.android.synthetic.main.demo_fragment.*
 
 class DemoFragment : Fragment() {
@@ -24,31 +18,36 @@ class DemoFragment : Fragment() {
     ): View? = inflater.inflate(R.layout.demo_fragment, container, false)
 
     override fun onViewCreated(view: View, saveInstanceState: Bundle?) {
-        mobileConnectionBarChart.animate(
-                linkedMapOf(
-                        "Янв" to 1000f,
-                        "Февр" to 200f,
-                        "Март" to 500f,
-                        "Апр" to 20f,
-                        "Май" to 100f,
-                        "Июнь" to 800f,
-                        "Июль" to 400f,
-                        "Авг" to 500f,
-                        "Сент" to 300f,
-                        "Окт" to 400f,
-                        "Ноя" to 450f,
-                        "Дек" to 0f
-                )
-        )
-
-        Handler(Looper.getMainLooper()).postDelayed({
-            mobileConnectionBarChart.scrollToBar(9)
-        }, 200)
+        mobileConnectionBarChart.updateData(linkedMapOf(
+                "00:00" to 1300f,
+                "01:00" to 800f,
+                "02:00" to 100f,
+                "03:00" to 80f,
+                "04:00" to 100f,
+                "05:00" to 800f,
+                "06:00" to 600f,
+                "07:00" to 500f,
+                "08:00" to 300f,
+                "09:00" to 400f,
+                "10:00" to 450f,
+                "11:00" to 0f,
+                "12:00" to 1300f,
+                "13:00" to 800f,
+                "14:00" to 100f,
+                "15:00" to 80f,
+                "16:00" to 100f,
+                "17:00" to 800f,
+                "18:00" to 600f,
+                "19:00" to 500f,
+                "20:00" to 300f,
+                "21:00" to 400f,
+                "22:00" to 450f,
+                "23:00" to 0f
+        ))
 
         mobileConnectionBarChart.onDataPointClickListener = { index, _, _ ->
             Log.i("clicked_time", System.currentTimeMillis().toString())
-            mobileConnectionBarChart.resetScrollX()
-            for(i in mobileConnectionBarChart.barsColors.indices) {
+            for (i in mobileConnectionBarChart.barsColors.indices) {
                 mobileConnectionBarChart.barsColors[i] = ContextCompat.getColor(requireContext(),
                         R.color.colorPrimary)
             }
@@ -56,23 +55,37 @@ class DemoFragment : Fragment() {
                     R.color.colorAccent)
 
             mobileConnectionBarChart.updateData(linkedMapOf(
-                    "Янв" to 1300f,
-                    "Февр" to 800f,
-                    "Март" to 100f,
-                    "Апр" to 80f,
-                    "Май" to 100f,
-                    "Июнь" to 800f,
-                    "Июль" to 600f,
-                    "Авг" to 500f,
-                    "Сент" to 300f,
-                    "Окт" to 400f,
-                    "Ноя" to 450f,
-                    "Дек" to 0f
+                    "00:00" to 1300f,
+                    "01:00" to 800f,
+                    "02:00" to 100f,
+                    "03:00" to 80f,
+                    "04:00" to 100f,
+                    "05:00" to 800f,
+                    "06:00" to 600f,
+                    "07:00" to 500f,
+                    "08:00" to 300f,
+                    "09:00" to 400f,
+                    "10:00" to 450f,
+                    "11:00" to 0f,
+                    "12:00" to 1300f,
+                    "13:00" to 800f,
+                    "14:00" to 100f,
+                    "15:00" to 80f,
+                    "16:00" to 100f,
+                    "17:00" to 800f,
+                    "18:00" to 600f,
+                    "19:00" to 500f,
+                    "20:00" to 300f,
+                    "21:00" to 400f,
+                    "22:00" to 450f,
+                    "23:00" to 0f
             ))
             mobileConnectionBarChart.invalidate()
 
             Log.i("draw_time", System.currentTimeMillis().toString())
             Toast.makeText(requireContext(), "$index clicked", Toast.LENGTH_SHORT).show()
         }
+
+        mobileConnectionBarChart.scrollToBar(23)
     }
 }
