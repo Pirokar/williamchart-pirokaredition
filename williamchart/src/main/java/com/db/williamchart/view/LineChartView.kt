@@ -11,20 +11,10 @@ import androidx.annotation.Size
 import com.db.williamchart.ChartContract
 import com.db.williamchart.R
 import com.db.williamchart.animation.NoAnimation
+import com.db.williamchart.data.*
 import com.db.williamchart.data.configuration.ChartConfiguration
-import com.db.williamchart.data.DataPoint
-import com.db.williamchart.data.Frame
-import com.db.williamchart.data.Label
 import com.db.williamchart.data.configuration.LineChartConfiguration
-import com.db.williamchart.data.Paddings
-import com.db.williamchart.data.toLinearGradient
-import com.db.williamchart.data.toRect
-import com.db.williamchart.extensions.centerAt
-import com.db.williamchart.extensions.getDrawable
-import com.db.williamchart.extensions.obtainStyledAttributes
-import com.db.williamchart.extensions.toLinePath
-import com.db.williamchart.extensions.toPx
-import com.db.williamchart.extensions.toSmoothLinePath
+import com.db.williamchart.extensions.*
 import com.db.williamchart.renderer.LineChartRenderer
 
 class LineChartView @JvmOverloads constructor(
@@ -162,13 +152,15 @@ class LineChartView @JvmOverloads constructor(
         typedArray.apply {
             lineColor = getColor(R.styleable.LineChartAttrs_chart_lineColor, lineColor)
             lineThickness =
-                getDimension(R.styleable.LineChartAttrs_chart_lineThickness, lineThickness)
+                    getDimension(R.styleable.LineChartAttrs_chart_lineThickness, lineThickness)
             smooth = getBoolean(R.styleable.LineChartAttrs_chart_smoothLine, smooth)
             pointsDrawableRes =
-                getResourceId(R.styleable.LineChartAttrs_chart_pointsDrawable, pointsDrawableRes)
+                    getResourceId(R.styleable.LineChartAttrs_chart_pointsDrawable, pointsDrawableRes)
             recycle()
         }
     }
+
+    override fun scrollToBar(barIndex: Int) {}
 
     companion object {
         private const val defaultSmoothFactor = 0.20f

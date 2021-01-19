@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.res.TypedArray
 import android.graphics.Canvas
-import android.graphics.Rect
 import android.graphics.Typeface
 import android.util.AttributeSet
 import android.util.Log
@@ -37,6 +36,8 @@ abstract class AxisChartView @JvmOverloads constructor(
 ) : FrameLayout(context, attrs, defStyleAttr) {
     private var widthOfView = 0
 
+    var barToScroll = 0
+
     var dataCount = 0
 
     var labelsSize: Float = defaultLabelsSize
@@ -54,6 +55,8 @@ abstract class AxisChartView @JvmOverloads constructor(
     var animation: ChartAnimation<DataPoint> = DefaultAnimation()
 
     val labels: Labels = AxisLabels()
+
+    var onScrollListener: OnScrollListener? = null
 
     var tooltip: Tooltip = object : Tooltip {
         override fun onCreateTooltip(parentView: ViewGroup) {}
@@ -102,7 +105,9 @@ abstract class AxisChartView @JvmOverloads constructor(
 
                     override fun onScroll(e1: MotionEvent?, e2: MotionEvent?, distanceX: Float, distanceY: Float): Boolean {
                         Log.i("onScroll", "before: distanceX = $distanceX")
-                        if(scrollX + distanceX >= 0 && scrollX + distanceX + canvas.width <= BarChartView.latestRightBound) {
+                        onScrollListener?.onViewScrolled()
+
+                        if (scrollX + distanceX >= 0 && scrollX + distanceX + canvas.width <= BarChartView.latestRightBound) {
                             scrollBy(distanceX.toInt(), 0)
                         }
                         Log.i("onScroll", "after: current ScrollX = $scrollX")
@@ -122,11 +127,6 @@ abstract class AxisChartView @JvmOverloads constructor(
         super.onAttachedToWindow()
         this.setWillNotDraw(false)
         // style.init()
-    }
-
-    override fun onDetachedFromWindow() {
-        super.onDetachedFromWindow()
-        // style.clean()
     }
 
     override fun computeHorizontalScrollOffset(): Int {
@@ -150,6 +150,10 @@ abstract class AxisChartView @JvmOverloads constructor(
         super.onDraw(canvas)
         this.canvas = canvas
         renderer.draw()
+        if (barToScroll != 11) {
+            scrollToBar(11)
+            barToScroll = 11
+        }
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -221,13 +225,15 @@ abstract class AxisChartView @JvmOverloads constructor(
                 grid = AxisGrid().apply {
                     color = getColor(R.styleable.ChartAttrs_chart_gridColor, color)
                     strokeWidth =
-                        getDimension(R.styleable.ChartAttrs_chart_gridStrokeWidth, strokeWidth)
+                            getDimension(R.styleable.ChartAttrs_chart_gridStrokeWidth, strokeWidth)
                 }
             }
 
             recycle()
         }
     }
+
+    abstract fun scrollToBar(barIndex: Int)
 
     protected fun handleEditMode() {
         if (isInEditMode) {

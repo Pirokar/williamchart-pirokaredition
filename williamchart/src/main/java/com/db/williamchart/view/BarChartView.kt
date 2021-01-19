@@ -1,5 +1,6 @@
 package com.db.williamchart.view
 
+import ScreenHelper
 import android.content.Context
 import android.content.res.TypedArray
 import android.graphics.Color
@@ -8,13 +9,9 @@ import android.util.AttributeSet
 import com.db.williamchart.ChartContract
 import com.db.williamchart.R
 import com.db.williamchart.animation.NoAnimation
+import com.db.williamchart.data.*
 import com.db.williamchart.data.configuration.BarChartConfiguration
 import com.db.williamchart.data.configuration.ChartConfiguration
-import com.db.williamchart.data.Frame
-import com.db.williamchart.data.Label
-import com.db.williamchart.data.Paddings
-import com.db.williamchart.data.toRect
-import com.db.williamchart.data.toRectF
 import com.db.williamchart.extensions.drawChartBar
 import com.db.williamchart.extensions.obtainStyledAttributes
 import com.db.williamchart.renderer.BarChartRenderer

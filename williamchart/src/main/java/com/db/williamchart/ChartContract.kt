@@ -1,12 +1,12 @@
 package com.db.williamchart
 
 import com.db.williamchart.animation.ChartAnimation
-import com.db.williamchart.data.configuration.ChartConfiguration
 import com.db.williamchart.data.DataPoint
-import com.db.williamchart.data.configuration.DonutChartConfiguration
 import com.db.williamchart.data.DonutDataPoint
 import com.db.williamchart.data.Frame
 import com.db.williamchart.data.Label
+import com.db.williamchart.data.configuration.ChartConfiguration
+import com.db.williamchart.data.configuration.DonutChartConfiguration
 
 interface ChartContract {
 
@@ -26,7 +26,6 @@ interface ChartContract {
     interface BarView : AxisView {
         fun drawBars(frames: List<Frame>)
         fun drawBarsBackground(frames: List<Frame>)
-        fun scrollToBar(barIndex: Int)
     }
 
     interface DonutView {
